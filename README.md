@@ -24,3 +24,5 @@ docker run -dit --volumes-from pfpstore --network host tag:version
 ```
 
 数据库 Mysql / MariaDB 均可。
+
+Docker Image 地址在 [hub.docker](https://hub.docker.com/r/bekcpear/pfp/)

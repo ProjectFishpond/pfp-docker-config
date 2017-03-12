@@ -5,7 +5,7 @@ LABEL maintainer "Bekcpear i@ume.ink"
 LABEL Description="这是一个运行 Flarum 论坛的 Docker 镜像，并针对中文进行了一些优化" \
       Version="v0.1.0-beta.6"
 
-ENV DOCKER_MAKE_PROXY 10.0.7.19:8123
+ENV DOCKER_MAKE_PROXY ''
 
 ADD ./sc/installNginxAndPhpfpmFromSource.sh /opt/sc/installNginxAndPhpfpmFromSource.sh
 RUN set -x \
@@ -29,14 +29,12 @@ RUN set -x \
 USER tempuser
 RUN set -x \
       && cd /opt/flarum \
-#      && setfacl -d -m mask::r-x /opt/flarum \
       && umask 0027 \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
          /opt/local/php/bin/php /opt/src/composer.phar create-project flarum/flarum . --stability=beta
 USER tempuser
 RUN set -x \
       && ls -ld /opt/flarum /opt/run /opt/logs /opt/keys \
-#      && setfacl -d -m mask::r-x /opt/flarum \
       && cd /opt/flarum \
       && umask 0027 \
       && sed -i -e '/"require": {/a\ \ \ \ \ \ \ \ "csineneo/flarum-ext-traditional-chinese": "v0.1.0-beta.6.8",'\
@@ -79,11 +77,6 @@ USER root
 RUN set -x \
       && userdel tempuser \
       && rm -rf /home/tempuser \
-#      && setfacl -d -m mask::r-x /opt/flarum \
-#      && setfacl -d -m mask::rwx /opt/run \
-#      && setfacl -d -m mask::rwx /opt/logs \
-#      && setfacl -d -m mask::r-x /opt/keys \
-#      && ls -ld /opt/flarum /opt/run /opt/logs /opt/keys \
       && cd /opt/flarum \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
          /opt/sc/hackFlarum.sh \
@@ -95,8 +88,7 @@ RUN set -x \
          yum install vim-enhanced bind-utils net-tools -y && yum clean all
 
 VOLUME /opt/conf /opt/logs /opt/keys /opt/flarum/assets /opt/flarum/storage
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 # use network driver 'host' better
 ADD ./sc/start.sh /opt/sc/start.sh
 CMD /opt/sc/start.sh

@@ -4,22 +4,23 @@
 
 部署方法很简单：
 
-1. 启动本机 Docker 服务后创建好 docker image:
- ```
- docker build . -t tag:version
- ```
-2. 创建一个 volume container:
- ```
- docker creat --name pfpstore \
++ 启动本机 Docker 服务后创建好 docker image:
+```
+docker build . -t tag:version
+```
++ 创建一个 volume container:
+```
+docker creat --name pfpstore \
          -v /path/to/conf:/opt/conf \
          -v /path/to/files/assets:/opt/flarum/assets \
          -v /path/to/files/storage:/opt/flarum/storage \
          -v /path/to/files/keys:/opt/keys \
          -v /path/to/files/logs:/opt/logs training/postgres /bin/true
- ```
-4. 修改好 `conf/` 下的 PHP 和 Nginx 配置文件
-3. 运行本镜像:
- ```
- docker run -dit --volumes-from pfpstore --network host tag:version
- ```
+```
++ 修改好 `conf/` 下的 PHP 和 Nginx 配置文件
++ 运行本镜像:
+```
+docker run -dit --volumes-from pfpstore --network host tag:version
+```
 
+数据库 Mysql / MariaDB 均可。

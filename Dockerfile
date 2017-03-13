@@ -72,6 +72,8 @@ ADD ./sc/404.html /opt/sc/404.html
 ADD ./sc/403.html /opt/sc/403.html
 ADD ./sc/500.html /opt/sc/500.html
 ADD ./sc/503.html /opt/sc/503.html
+ADD ./sc/dav-is-customfooter-src-main.js.modified /opt/sc/dav-is-customfooter-src-main.js.modified
+ADD ./sc/dav-is-customfooter-dist-extension.js.modified /opt/sc/dav-is-customfooter-dist-extension.js.modified
 ADD ./sc/JsonApiResponse.php /opt/sc/JsonApiResponse.php
 USER root
 RUN set -x \

@@ -87,7 +87,7 @@ RUN set -x \
       && chown php-fpm -R /opt/flarum
 RUN set -x \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
-         yum install vim-enhanced bind-utils net-tools -y && yum clean all
+         yum install vim-enhanced bind-utils net-tools tree -y && yum clean all
 
 VOLUME /opt/conf /opt/logs /opt/keys /opt/flarum/assets /opt/flarum/storage
 EXPOSE 80 443

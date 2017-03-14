@@ -14,43 +14,44 @@ class JsonApiResponse extends JsonResponse {
   protected $tran_content;
 
   protected function cc($rKey, $cKey, $lang, $i = null){
-    if($i != null){
-      if(! isset($this->tran_content[$rKey][$i]["attributes"])) return;
-      $str_t = preg_replace('~[\x00-\x7f]+~i', '', $this->tran_content[$rKey][$i]["attributes"][$cKey]);
-    }else{
+    if($i === null){
       if(! isset($this->tran_content[$rKey]["attributes"])) return;
       $str_t = preg_replace('~[\x00-\x7f]+~i', '', $this->tran_content[$rKey]["attributes"][$cKey]);
+    }else{
+      if(! isset($this->tran_content[$rKey][$i]["attributes"])) return;
+      $str_t = preg_replace('~[\x00-\x7f]+~i', '', $this->tran_content[$rKey][$i]["attributes"][$cKey]);
     }
+
     $cNum = strlen(iconv("UTF-8", "GB2312//IGNORE", $str_t));
     $sNum = strlen($str_t);
     if($cNum != 0 && $sNum != 0 && $cNum / $sNum < 0.6 && $lang === 'zh-cn'){
-      // traditional source to simplified
+      // traditional source to simplified 
       $ccconfig = opencc_open('tw2sp.json');
     }elseif($cNum === 0 && $sNum != 0 && $lang === 'zh-cn'){
-      // traditional source to simplified
+      // traditional source to simplified 
       $ccconfig = opencc_open('tw2sp.json');
     }elseif($lang === 'zh-tw' || $lang === 'zh-hk'){
-      // simplified source to traditional
+      // simplified source to traditional 
       $ccconfig = opencc_open('s2twp.json');
     }else{
       return;
     }
-    if($i == null){
+    if($i === null){
       $cctext = opencc_convert($this->tran_content[$rKey]["attributes"][$cKey], $ccconfig);
       $this->tran_content[$rKey]["attributes"][$cKey] = $cctext;
     }else{
       $cctext = opencc_convert($this->tran_content[$rKey][$i]["attributes"][$cKey], $ccconfig);
       $this->tran_content[$rKey][$i]["attributes"][$cKey] = $cctext;
-    }
+    }   
     opencc_close($ccconfig);
   }
 
   protected function judge($lang, $rKey, $i = null){
-    if($i != null && isset($this->tran_content[$rKey][$i]["type"])){
-        $content = $this->tran_content[$rKey][$i];
-    }elseif( $i == null && isset($this->tran_content[$rKey]["type"])){
+    if($i === null && isset($this->tran_content[$rKey]["type"])){
         $content = $this->tran_content[$rKey];
-    }
+    }elseif($i !== null && isset($this->tran_content[$rKey][$i]["type"])){
+        $content = $this->tran_content[$rKey][$i];
+    }   
     if(isset($content)){
       if(! isset($content["attributes"])) return;
       if($content["type"] === "posts" && $content["attributes"]["contentType"] === "comment"){
@@ -59,9 +60,9 @@ class JsonApiResponse extends JsonResponse {
         $cKey = 'title';
       }else{
         return;
-      }
+      }   
       $this->cc($rKey, $cKey, $lang, $i);
-    }
+    }   
   }
 
   public function __construct(Document $document, $status = 200, array $headers = [], $encodingOptions = 15) {
@@ -101,7 +102,6 @@ class JsonApiResponse extends JsonResponse {
       }
     }
 
-//var_dump($this->tran_content);
     parent::__construct($this->tran_content, $status, $headers, $encodingOptions);
   }
 }

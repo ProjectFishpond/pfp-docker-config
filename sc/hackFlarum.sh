@@ -179,4 +179,4 @@ eval "/usr/bin/cp -f ${wpwd}/503.html vendor/flarum/core/error/"
 # 修改自定义 Footer 默认显示，并取消 fixed 属性以及切换显示按钮
 echo "修改自定义 Footer 默认显示，并取消 fixed 属性以及切换显示按钮"
 eval "/usr/bin/cp -f ${wpwd}/dav-is-customfooter-dist-extension.js.modified vendor/davis/flarum-ext-customfooter/js/forum/dist/extension.js"
-eval "/usr/bin/cp -f ${wpwd}/dav-is-customfooter-src-main.js.modified vendor/davis/flarum-ext-customfooter/js/forum/src/main.js
+eval "/usr/bin/cp -f ${wpwd}/dav-is-customfooter-src-main.js.modified vendor/davis/flarum-ext-customfooter/js/forum/src/main.js"

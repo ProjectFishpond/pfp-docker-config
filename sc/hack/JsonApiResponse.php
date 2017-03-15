@@ -22,6 +22,13 @@ class JsonApiResponse extends JsonResponse {
       $str_t = preg_replace('~[\x00-\x7f]+~i', '', $this->tran_content[$rKey][$i]["attributes"][$cKey]);
     }
 
+    /*
+     * 繁简判断说明：
+     * 判断文字是繁是简的方法是将内容去 ASCII 表 0-127 字符后对其进行转 GB2312 处理，剔除无法转义的字符后根据实际转义字符数/转义前字符数比例来判断的。
+     * GB2312 完全没有编码繁体字并且简体也漏了一部分，我多次尝试了一下，一般来说比例达到 0.65 左右可以判断为简体文本
+     * （但是不排除极个别情况，这种情况那就是繁体字非常非常少夹杂在简体文本中，则忽略了）
+     * 我这边主要是简体主流，所以我判断下降到了 0.6，可以根据实际情况修改
+     */
     $cNum = strlen(iconv("UTF-8", "GB2312//IGNORE", $str_t));
     $sNum = strlen($str_t);
     if($cNum != 0 && $sNum != 0 && $cNum / $sNum < 0.6 && $lang === 'zh-cn'){

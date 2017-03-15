@@ -166,6 +166,7 @@ make && make install
 
 eval "cd $cpwd"
 eval "/usr/bin/cp -f ${wpwd}/JsonApiResponse.php" vendor/flarum/core/src/Api/JsonApiResponse.php
+eval "/usr/bin/cp -f ${wpwd}/MySqlFulltextDriver.php" vendor/flarum/core/src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
 yum clean all
 rm -rf /opt/src/*
 

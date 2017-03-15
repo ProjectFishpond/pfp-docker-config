@@ -1,9 +1,9 @@
 <?php
 
 /* Written by Bekcpear
- * 
+ *
  */
- 
+
 namespace Flarum\Api;
 
 use Tobscure\JsonApi\Document;
@@ -25,13 +25,13 @@ class JsonApiResponse extends JsonResponse {
     $cNum = strlen(iconv("UTF-8", "GB2312//IGNORE", $str_t));
     $sNum = strlen($str_t);
     if($cNum != 0 && $sNum != 0 && $cNum / $sNum < 0.6 && $lang === 'zh-cn'){
-      // traditional source to simplified 
+      // traditional source to simplified
       $ccconfig = opencc_open('tw2sp.json');
     }elseif($cNum === 0 && $sNum != 0 && $lang === 'zh-cn'){
-      // traditional source to simplified 
+      // traditional source to simplified
       $ccconfig = opencc_open('tw2sp.json');
     }elseif($lang === 'zh-tw' || $lang === 'zh-hk'){
-      // simplified source to traditional 
+      // simplified source to traditional
       $ccconfig = opencc_open('s2twp.json');
     }else{
       return;
@@ -42,7 +42,7 @@ class JsonApiResponse extends JsonResponse {
     }else{
       $cctext = opencc_convert($this->tran_content[$rKey][$i]["attributes"][$cKey], $ccconfig);
       $this->tran_content[$rKey][$i]["attributes"][$cKey] = $cctext;
-    }   
+    }
     opencc_close($ccconfig);
   }
 
@@ -51,7 +51,7 @@ class JsonApiResponse extends JsonResponse {
         $content = $this->tran_content[$rKey];
     }elseif($i !== null && isset($this->tran_content[$rKey][$i]["type"])){
         $content = $this->tran_content[$rKey][$i];
-    }   
+    }
     if(isset($content)){
       if(! isset($content["attributes"])) return;
       if($content["type"] === "posts" && $content["attributes"]["contentType"] === "comment"){
@@ -60,9 +60,9 @@ class JsonApiResponse extends JsonResponse {
         $cKey = 'title';
       }else{
         return;
-      }   
+      }
       $this->cc($rKey, $cKey, $lang, $i);
-    }   
+    }
   }
 
   public function __construct(Document $document, $status = 200, array $headers = [], $encodingOptions = 15) {

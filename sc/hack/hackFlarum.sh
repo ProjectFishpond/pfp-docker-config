@@ -146,29 +146,11 @@ sed -i "s/输入\sID\s前三个字符进行搜索/输入用户名或组名进行
 sed -i "s/輸入\sID\s前三個字符進行搜尋/輸入帳戶名或組名進行搜尋/" \
     vendor/csineneo/flarum-ext-traditional-chinese/locale/flagrow-byobu.yml
 
+wpwd=$(dirname $0)
 # 根据当前浏览语言设定，使用 OpenCC 进行繁简转换 (注意 PHP 插件配置)
 echo "根据当前浏览语言设定，使用 OpenCC 进行繁简转换"
-yum install -y cmake gcc-c++ doxygen && yum clean all
-cpwd=$(pwd)
-wpwd=$(dirname $0)
-cd /opt/src
-git clone https://github.com/BYVoid/OpenCC.git
-cd OpenCC
-make && make install
-/usr/bin/cp build/rel/src/libopencc.so.2 /usr/lib64/
-#
-cd ..
-git clone https://github.com/NauxLiu/opencc4php.git
-cd opencc4php
-/opt/local/php/bin/phpize
-./configure --with-php-config=/opt/local/php/bin/php-config --prefix=/opt/local
-make && make install
-
-eval "cd $cpwd"
 eval "/usr/bin/cp -f ${wpwd}/JsonApiResponse.php" vendor/flarum/core/src/Api/JsonApiResponse.php
 eval "/usr/bin/cp -f ${wpwd}/MySqlFulltextDriver.php" vendor/flarum/core/src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
-yum clean all
-rm -rf /opt/src/*
 
 # 替换错误页面
 echo "替换错误页面"

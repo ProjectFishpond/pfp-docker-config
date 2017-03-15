@@ -1,6 +1,6 @@
 
 FROM centos:latest
-LABEL maintainer "Bekcpear i@ume.ink"
+LABEL maintainer "Bekcpear <i@ume.ink>"
 
 LABEL Description="这是一个运行 Flarum 论坛的 Docker 镜像，并针对中文进行了一些优化" \
       Version="v0.1.0-beta.6"
@@ -32,7 +32,7 @@ RUN set -x \
       && umask 0027 \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
          /opt/local/php/bin/php /opt/src/composer.phar create-project flarum/flarum . --stability=beta
-USER tempuser
+
 RUN set -x \
       && ls -ld /opt/flarum /opt/run /opt/logs /opt/keys \
       && cd /opt/flarum \
@@ -67,27 +67,33 @@ RUN set -x \
          /opt/local/php/bin/php /opt/src/composer.phar update \
       && umask 0022
 
-ADD ./sc/hackFlarum.sh /opt/sc/hackFlarum.sh
-ADD ./sc/404.html /opt/sc/404.html
-ADD ./sc/403.html /opt/sc/403.html
-ADD ./sc/500.html /opt/sc/500.html
-ADD ./sc/503.html /opt/sc/503.html
-ADD ./sc/dav-is-customfooter-src-main.js.modified /opt/sc/dav-is-customfooter-src-main.js.modified
-ADD ./sc/dav-is-customfooter-dist-extension.js.modified /opt/sc/dav-is-customfooter-dist-extension.js.modified
-ADD ./sc/JsonApiResponse.php /opt/sc/JsonApiResponse.php
 USER root
 RUN set -x \
       && userdel tempuser \
       && rm -rf /home/tempuser \
-      && cd /opt/flarum \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
-         /opt/sc/hackFlarum.sh \
+         yum install -y cmake gcc-c++ doxygen vim-enhanced bind-utils net-tools tree && yum clean all \
+      && cd /opt/src \
+      && git clone https://github.com/BYVoid/OpenCC.git \
+      && cd OpenCC \
+      && make && make install \
+      && /usr/bin/cp build/rel/src/libopencc.so.2 /usr/lib64/ \
+      && cd .. \
+      && git clone https://github.com/NauxLiu/opencc4php.git \
+      && cd opencc4php \
+      && /opt/local/php/bin/phpize \
+      && ./configure --with-php-config=/opt/local/php/bin/php-config --prefix=/opt/local \
+      && make && make install \
+      && yum clean all \
+      && rm -rf /opt/src/*
+
+COPY ./sc/hack/* /opt/sc/
+RUN set -x \
+      && cd /opt/flarum \
+      && /opt/sc/hackFlarum.sh \
       && ln -s /opt/conf/flarum/config.php /opt/flarum/config.php \
       && ln -s /opt/conf/flarum/sitemap.xml /opt/flarum/sitemap.xml \
       && chown php-fpm -R /opt/flarum
-RUN set -x \
-      && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
-         yum install vim-enhanced bind-utils net-tools tree -y && yum clean all
 
 VOLUME /opt/conf /opt/logs /opt/keys /opt/flarum/assets /opt/flarum/storage
 EXPOSE 80 443

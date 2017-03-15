@@ -30,9 +30,12 @@ class JsonApiResponse extends JsonResponse {
     }elseif($cNum === 0 && $sNum != 0 && $lang === 'zh-cn'){
       // traditional source to simplified
       $ccconfig = opencc_open('tw2sp.json');
-    }elseif($lang === 'zh-tw' || $lang === 'zh-hk'){
-      // simplified source to traditional
+    }elseif($lang === 'zh-tw'){
+      // simplified source to traditional TW
       $ccconfig = opencc_open('s2twp.json');
+    }elseif($lang === 'zh-hk'){
+      // simplified source to traditional HK
+      $ccconfig = opencc_open('s2hk.json');
     }else{
       return;
     }

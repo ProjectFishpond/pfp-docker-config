@@ -3,7 +3,7 @@ FROM centos:latest
 LABEL maintainer "Bekcpear <i@ume.ink>"
 
 LABEL Description="这是一个运行 Flarum 论坛的 Docker 镜像，并针对中文进行了一些优化" \
-      Version="v0.1.0-beta.6"
+      Version="v0.1.0-beta.7"
 
 ENV DOCKER_MAKE_PROXY ''
 
@@ -37,12 +37,11 @@ RUN set -x \
       && ls -ld /opt/flarum /opt/run /opt/logs /opt/keys \
       && cd /opt/flarum \
       && umask 0027 \
-      && sed -i -e '/"require": {/a\ \ \ \ \ \ \ \ "csineneo/flarum-ext-traditional-chinese": "v0.1.0-beta.6.8",'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "csineneo/flarum-ext-simplified-chinese": "v0.1.0-beta.6.7",'\
+      && sed -i -e '/"require": {/a\ \ \ \ \ \ \ \ "csineneo/flarum-ext-traditional-chinese": "^0.1.0@beta",'\
+                -e '/"require": {/a\ \ \ \ \ \ \ \ "csineneo/flarum-ext-simplified-chinese": "^0.1.0@beta",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "terabin/flarum-ext-sitemap": "^1.0@beta",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "flagrow/flarum-ext-analytics": "^0.5.0",'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "flagrow/byobu": "^0.1.0",'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "flagrow/upload": "^0.4.7",'\
+#                -e '/"require": {/a\ \ \ \ \ \ \ \ "flagrow/byobu": "^0.1.0@beta",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "vingle/flarum-share-social": "^0.1.0",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "sijad/flarum-ext-pages": "^0.1.0@beta",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "sijad/flarum-ext-links": "^0.1.0@beta",'\
@@ -57,10 +56,6 @@ RUN set -x \
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "davis/flarum-ext-split": "^v0.1.0",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "amaurycarrade/flarum-ext-syndication": "^v0.1.5",'\
                 -e '/"require": {/a\ \ \ \ \ \ \ \ "xengine/flarum-ext-signature": "^0.1.2",'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "matpompili/flarum-imgur-upload": "^1.0",'\
-                -e '#zendframework/zend-stratigility#d'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "zendframework/zend-stratigility": "1.2.1",'\
-                -e '/"require": {/a\ \ \ \ \ \ \ \ "http-interop/http-middleware": "^0.2.0",'\
                 composer.json \
       && rm -f composer.lock \
       && https_proxy=$DOCKER_MAKE_PROXY http_proxy=$DOCKER_MAKE_PROXY \
@@ -86,7 +81,6 @@ RUN set -x \
       && make && make install \
       && yum clean all \
       && rm -rf /opt/src/*
-
 COPY ./sc/hack/* /opt/sc/
 RUN set -x \
       && cd /opt/flarum \

@@ -128,13 +128,13 @@ sed -i "s#getIdForUsername(#getIdForUsername(rawurlencode(#; /getIdForUsername/s
     vendor/flarum/flarum-ext-mentions/src/Listener/FormatUserMentions.php
 
 # 增加中文搜索支援
-echo '增加中文搜索支援'
-sed -i "/AGAINST/d; /discussion_id/i\\\t\\t->where('content', 'like', '%'.\$string.'%')" \
-    vendor/flarum/core/src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
+#echo '增加中文搜索支援'
+#sed -i "/AGAINST/d; /discussion_id/i\\\t\\t->where('content', 'like', '%'.\$string.'%')" \
+#    vendor/flarum/core/src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
 
 # 修正中文名無法獲取 id 的問題
 echo '修正中文名無法獲取 id 的問題'
-sed -i "78i\\\t\\t\$username = rawurldecode(\$username);" \
+sed -i "79i\\\t\\t\$username = rawurldecode(\$username);" \
     vendor/flarum/core/src/Core/Repository/UserRepository.php
 
 # 替换一些说明

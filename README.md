@@ -1,7 +1,7 @@
 ### Project Fishpond 的 Docker 镜像配置文件
 
-使用了 PHP 7.1.2 和 Nginx 1.11.10
-添加了 nginx-ct 扩展和静态的 openssl-1.1.0e
+使用了 PHP 7.1.8 和 Nginx 1.12.1
+添加了 nginx-ct 扩展和静态的 openssl-1.1.0f
 
 #### 相对于默认的 Flarum 添加的扩展有：
 
@@ -9,12 +9,12 @@
 - csineneo/flarum-ext-simplified-chinese
 - terabin/flarum-ext-sitemap
 - flagrow/flarum-ext-analytics
-- flagrow/byobu
-- flagrow/upload
+- <s>flagrow/byobu</s> (refer https://github.com/flagrow/byobu/issues/46)
+- <s>flagrow/upload</s>
 - vingle/flarum-share-social
 - sijad/flarum-ext-pages
 - sijad/flarum-ext-links
-- sijad/flarum-ext-github-autolink
+- sijad/flarum-ext-github-autolink (error when enabled, refer https://github.com/sijad/flarum-ext-github-autolink/issues/3)
 - avatar4eg/flarum-ext-users-list
 - xengine/flarum-ext-markdown-editor
 - clarkwinkelmann/flarum-ext-emojionearea
@@ -25,13 +25,13 @@
 - davis/flarum-ext-split
 - amaurycarrade/flarum-ext-syndication
 - xengine/flarum-ext-signature
-- matpompili/flarum-imgur-upload
+- <s>matpompili/flarum-imgur-upload</s>
 
 #### 在此基础上所做的修改：
 
 - 根据浏览器的本地语言设置自动翻译贴文繁简
 - 添加繁簡互通搜尋特性
-- 中文用户注册实现 & 基本无 Bug
+- 中文用户注册实现 & 基本无 Bug (目前注册有一个问题，当密码过于简单会注册失败，且没有提示，无论中英文)
 - 实现中文搜索（搜索/注册字符数限制从最少 3 个改为最少一个，以满足中文要求）
 - 帖子编辑器按钮中文化
 - 逢千帖不缩进为 n 千而是改为逢万帖缩进为 n 万
@@ -45,7 +45,7 @@
 
 #### 部署方法：
 
-- 准备好 Mysql/MariaDB 服务
+- 准备好 Mysql/MariaDB 服务，目前使用 MariaDB 10.2 会有问题，参见： https://github.com/flarum/core/issues/1211
 - 复制本项目目录 `conf` & `files` 到 `/path/to` 下
 - 将设置好的 Nginx 所有配置文件放到 `/path/to/conf/nginx` 目录下，如下：
 ```
@@ -73,7 +73,7 @@ docker build . -t tag:version
 ```
 - 创建一个 volume container:
 ```
-docker creat --name pfpstore \
+docker create --name pfpst \
          -v /path/to/conf:/opt/conf \
          -v /path/to/files/assets:/opt/flarum/assets \
          -v /path/to/files/storage:/opt/flarum/storage \
@@ -82,7 +82,7 @@ docker creat --name pfpstore \
 ```
 - 运行本镜像:
 ```
-docker run -dit --volumes-from pfpstore --network host tag:version
+docker run --name pfpmain --rm -dit --volumes-from pfpst --network host tag:version
 ```
 
 
